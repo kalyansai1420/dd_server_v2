@@ -3,14 +3,15 @@ package com.dod.dodbackend.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "product")
@@ -18,7 +19,7 @@ public class Product {
     @Id
     private String sku;
     private String name;
-    @Column(length = 2500)
+    @Column(length = 2500,columnDefinition="TEXT")
     private String description;
     private String campaign;
     private String category;
@@ -28,9 +29,10 @@ public class Product {
     private String discountPercentage;
     private String image;
     private String rating;
+	@Column(columnDefinition="TEXT")
     private String url;
     
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     @JsonIgnoreProperties("product")
     private List<ProductImage> images;
 

@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.dod.dodbackend.model.Product;
 import com.dod.dodbackend.model.ProductImage;
+import com.dod.dodbackend.repo.ProductCustomRepo;
 import com.dod.dodbackend.repo.ProductRepo;
 import com.dod.dodbackend.service.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +27,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepo productRepo;
+    
+    @Autowired
+    ProductCustomRepo productCustomRepo;
 
     @Override
     public void fetchDataAndSave() throws JsonMappingException, JsonProcessingException {
@@ -96,5 +100,30 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+	@Override
+	public List<Product> search(String s) {
+		List<Product> list;
+		if(s.contains(" ")) {
+			list=this.productRepo.indexSearch(s);
+		}
+		else {
+			list=this.productRepo.searchByName(s);
+		}
+		return list;
+	}
+	
+	public Integer createIndex() {
+		if (this.productRepo.showFullTextindex() == 0) {
+//			this.walmartProductsRepo.createFullTextIndex();
+			this.productCustomRepo.createIFullTextndex();
+		}
+		return this.productRepo.showFullTextindex();
+	}
 
+	@Override
+	public String deleteProducts() {
+		this.productRepo.deleteAll();
+		return "Successfully deleted";
+		
+	}
 }

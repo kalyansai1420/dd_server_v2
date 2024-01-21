@@ -1,17 +1,25 @@
 package com.dod.dodbackend.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dod.dodbackend.model.Product;
 import com.dod.dodbackend.service.BestBuyService;
 import com.dod.dodbackend.service.DellService;
 import com.dod.dodbackend.service.IkeaService;
 import com.dod.dodbackend.service.ProductService;
+import com.dod.dodbackend.service.WalmartCatalogsService;
+import com.dod.dodbackend.service.WalmartProductsService;
+import com.dod.dodbackend.util.WalmartProducts;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -19,9 +27,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 @RestController
 @RequestMapping("/api/v1")
 public class ProductController {
-    
-    @Autowired
-    private ProductService productService;
 
 	@Autowired
 	private BestBuyService bestBuyService;
@@ -31,10 +36,23 @@ public class ProductController {
 
 	@Autowired
 	private IkeaService ikeaService;
+	
+	@Autowired
+	private WalmartCatalogsService  walmartCatalogsService;
+	
+	@Autowired
+	private WalmartProductsService walmartProductsService;
+	
+	@Autowired
+	private ProductService productService;
 
     @GetMapping("/bestbuyLaptops")
 	public String saveBestBuyLaptops() throws JsonMappingException, JsonProcessingException {
 		this.bestBuyService.fetchDataAndSaveBestBuyLaptops();
+		this.bestBuyService.fetchDataAndSaveBestBuyLaptops2();
+		this.bestBuyService.fetchDataAndSaveBestBuyLaptops3();
+		this.bestBuyService.fetchDataAndSaveBestBuyLaptops4();
+		this.bestBuyService.fetchDataAndSaveBestBuyLaptops5();
 		 return "saved";
 	}
     @GetMapping("/bestbuyDesktops")
@@ -93,5 +111,27 @@ public class ProductController {
 		this.ikeaService.fetchDataAndSaveIkeaChairs();
 		 return "saved";
 	}
+	
+	@GetMapping("/walmartProducts")
+	public String saveWalmartProducts() throws IOException {
+		this.walmartProductsService.fetchDataAndSaveWalmartproducts();
+		return "saved";
+	}
+	
+	@GetMapping("/search/{search}")
+	public ResponseEntity<List<Product>> search(@PathVariable String search){
+		return ResponseEntity.ok(this.productService.search(search));		
+	}
+	
+	@GetMapping("/createIndex")
+	public ResponseEntity<Integer> createIndex(){
+		return ResponseEntity.ok(this.productService.createIndex());		
+	}
+	
+	@DeleteMapping("/deleteProducts")
+	public ResponseEntity<String> deleteProducts(){
+		return ResponseEntity.ok(this.productService.deleteProducts());
+	}
+	
    
 }
