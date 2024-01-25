@@ -126,4 +126,26 @@ public class ProductServiceImpl implements ProductService {
 		return "Successfully deleted";
 		
 	}
+
+    @Override
+    public List<Product> getLaptopDeals() {
+        return this.productRepo.getLaptops();
+      }
+
+    @Override
+    public List<Product> getGamingAndMonitorDeals() {
+        return this.productRepo.getGamingAndMonitor();
+    }
+
+    @Override
+    public List<Product> getTopDeals() {
+        return this.productRepo.getTopDeals();
+    }
+
+    @Override
+    public List<Product> getElectronicsDeals() {
+        return this.productRepo.getElectronics();
+    }
+
+    
 }

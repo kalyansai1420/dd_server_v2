@@ -20,7 +20,7 @@ public class Vacation {
     private String details;
     private String discountPrice;
     private String originalPrice;
-    private String discountPercentage;
+    private Long discountPercentage;
     private String imageUrl;
     private String dealUrl;
 
@@ -31,7 +31,7 @@ public class Vacation {
     }
 
     public Vacation(Long id, String name, String vacationPackage, String ratings, String details, String discountPrice,
-            String originalPrice, String discountPercentage, String imageUrl, String dealUrl, String fromAndTo) {
+            String originalPrice, Long discountPercentage, String imageUrl, String dealUrl, String fromAndTo) {
         this.id = id;
         this.name = name;
         this.vacationPackage = vacationPackage;
@@ -101,11 +101,11 @@ public class Vacation {
         this.originalPrice = originalPrice;
     }
 
-    public String getDiscountPercentage() {
+    public Long getDiscountPercentage() {
         return discountPercentage;
     }
 
-    public void setDiscountPercentage(String discountPercentage) {
+    public void setDiscountPercentage(Long discountPercentage) {
         this.discountPercentage = discountPercentage;
     }
 

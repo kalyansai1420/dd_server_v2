@@ -22,17 +22,16 @@ import com.dod.dodbackend.util.WalmartProducts;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class WalmartProductsServiceImpl implements WalmartProductsService{
-	
+public class WalmartProductsServiceImpl implements WalmartProductsService {
+
 	static final String USERNAME = "IRA4K3ySvbUh3917115tdrHHtKz6Y6tff1";
 	static final String PASSWORD = "mXZ.6AWn6YpUFaEMkCAwBwe.BeRdvPaE";
-	
+
 	@Autowired
 	WalmartCatalogsServiceImpl walmartCatalogsServiceImpl;
-	
-    @Autowired
-    private ProductRepo productRepo;
-	
+
+	@Autowired
+	private ProductRepo productRepo;
 
 	@Override
 	public void fetchDataAndSaveWalmartproducts() throws IOException {
@@ -58,37 +57,43 @@ public class WalmartProductsServiceImpl implements WalmartProductsService{
 			String responseBody = response.getBody();
 			ObjectMapper objectMapper = new ObjectMapper();
 			Walmart walmart = objectMapper.readValue(responseBody, Walmart.class);
-//			
+			//
 			List<WalmartProducts> products = walmart.getProducts();
-			
-			for(WalmartProducts walmartProduct:products) {
-				Product pd=new Product();
-				//sku
-				
+
+			for (WalmartProducts walmartProduct : products) {
+				Product pd = new Product();
+
+
 				pd.setSku(walmartProduct.getId());
-				pd.setCampaign(walmartProduct.getCampaignName()) ;
+				pd.setCampaign(walmartProduct.getCampaignName());
 				pd.setCategory(walmartProduct.getCategory());
 				pd.setDescription(walmartProduct.getDescription());
-				pd.setDiscountPercentage(walmartProduct.getDiscountPercentage());
 				pd.setImage(walmartProduct.getImageUrl());
 				pd.setName(walmartProduct.getName());
 				pd.setRegularPrice(walmartProduct.getOriginalPrice());
 				pd.setSalePrice(walmartProduct.getCurrentPrice());
+				pd.setDiscountPercentage(getDiscount(walmartProduct.getOriginalPrice(), walmartProduct.getCurrentPrice()));
 				pd.setSubCategory(walmartProduct.getSubCategory());
 				pd.setUrl(walmartProduct.getUrl());
 				pd.setImages(null);
 				productRepo.save(pd);
-				
-				
-				
 			}
-			
-			
-//			this.walmartProductsRepo.saveAll(products);
-			
 
-//			return products;
 		}
 
-}
+	}
+
+	private Long getDiscount(String regularPriceStr, String salePriceStr) {
+        if (regularPriceStr == null || regularPriceStr.isEmpty() || salePriceStr == null || salePriceStr.isEmpty()) {
+            return 0L;
+        }
+
+        double regularPrice = Double.parseDouble(regularPriceStr);
+        double salePrice = Double.parseDouble(salePriceStr);
+
+        double discount = regularPrice - salePrice;
+        double discountPercentage = (discount / regularPrice) * 100;
+
+        return (long)discountPercentage;
+    }
 }

@@ -17,6 +17,16 @@ public interface ProductService {
 	public Integer createIndex();
 	
 	public String deleteProducts();
+
+	public List<Product> getLaptopDeals();
+
+	public List<Product> getGamingAndMonitorDeals();
+
+	public List<Product> getTopDeals();
+
+	public List<Product> getElectronicsDeals();
+
+
 	
 	
 

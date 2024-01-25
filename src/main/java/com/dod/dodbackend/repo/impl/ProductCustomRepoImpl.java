@@ -17,7 +17,7 @@ public class ProductCustomRepoImpl implements ProductCustomRepo{
     @Transactional
 	@Override
 	public void createIFullTextndex() {
-		 String sql = "CREATE FULLTEXT INDEX productsIndex ON doddb.product(name);";
+		 String sql = "CREATE FULLTEXT INDEX productsIndex ON dddatabase.product(name);";
 	        entityManager.createNativeQuery(sql).executeUpdate();
 	}
 

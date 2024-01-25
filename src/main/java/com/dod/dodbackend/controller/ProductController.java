@@ -22,6 +22,8 @@ import com.dod.dodbackend.service.WalmartProductsService;
 import com.dod.dodbackend.util.WalmartProducts;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @CrossOrigin("*")
 @RestController
@@ -132,6 +134,37 @@ public class ProductController {
 	public ResponseEntity<String> deleteProducts(){
 		return ResponseEntity.ok(this.productService.deleteProducts());
 	}
+
+
+	//Deals on laptops
+	@GetMapping("/laptopDeals")
+	public ResponseEntity<List<Product>> getLaptops() {
+		return ResponseEntity.ok(this.productService.getLaptopDeals());
+	}
+	
+	//Deals on gaming and monitors
+	@GetMapping("/gamingAndMonitorDeals")
+	public ResponseEntity<List<Product>> getGamingAndMonitorDeals() {
+		return ResponseEntity.ok(this.productService.getGamingAndMonitorDeals());
+	}
+
+	//Top deals
+	@GetMapping("/topDeals")
+	public ResponseEntity<List<Product>> getTopDeals() {
+		return ResponseEntity.ok(this.productService.getTopDeals());
+	}
+
+	//Deals on electronics
+	@GetMapping("/electronicsDeals")
+	public ResponseEntity<List<Product>> getElectronicsDeals() {
+		return ResponseEntity.ok(this.productService.getElectronicsDeals());
+	}
+
+	
+
+
+
+
 	
    
 }

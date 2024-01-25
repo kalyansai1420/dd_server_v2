@@ -2,6 +2,7 @@ package com.dod.dodbackend.service.impl;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.List;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -21,12 +22,12 @@ public class VacationServiceImpl implements VacationService {
     @Autowired
     private VacationRepo vacationRepo;
 
-    private static final long MAX_SCRAPING_DURATION = 1 * 60 * 1000;
+    private static final int MAX_SCRAPING_COUNT = 75;
 
     @Override
     public void fetchDataAndSaveVacation() throws IOException {
 
-        long startTime = System.currentTimeMillis();
+        int scrapingCount = 0;
 
         String url = "https://www.hotwire.com/packages";
 
@@ -45,8 +46,7 @@ public class VacationServiceImpl implements VacationService {
                 String text = link.text();
                 String vacationUrl = href;
                 try {
-                    // Introduce a delay between requests
-                    Thread.sleep(5000); // 5 seconds delay
+                    Thread.sleep(5000);
 
                     Connection connection = Jsoup.connect(vacationUrl)
                             .userAgent(
@@ -86,18 +86,21 @@ public class VacationServiceImpl implements VacationService {
                             String formattedDiscountedPrice = formatPrice(discountedPriceStr);
                             vacation.setDiscountPrice(formattedDiscountedPrice);
 
-                            String discountPercentage = getDiscount(formattedOriginalPrice, formattedDiscountedPrice);
-                            vacation.setDiscountPercentage(discountPercentage);
+                            vacation.setDiscountPercentage(
+                                    getDiscount(formattedOriginalPrice, formattedDiscountedPrice));
                             vacation.setImageUrl(packageElement.select("img.uitk-image-media").attr("src"));
                             vacation.setFromAndTo(packageElement.select("div.uitk-layout-flex-item").text());
                             vacationRepo.save(vacation);
-                        }
-                        long elapsedTime = System.currentTimeMillis() - startTime;
+                            scrapingCount++;
 
-                        if (elapsedTime > MAX_SCRAPING_DURATION) {
-                            break;
+                            if (scrapingCount >= MAX_SCRAPING_COUNT) {
+                                break;
+                            }
                         }
 
+                    }
+                    if (scrapingCount >= MAX_SCRAPING_COUNT) {
+                        break;
                     }
                 } catch (SocketTimeoutException e) {
                     System.err.println("Timeout while connecting to: " + vacationUrl);
@@ -111,6 +114,11 @@ public class VacationServiceImpl implements VacationService {
 
     }
 
+    @Override
+    public List<Vacation> getVacationDeals() {
+        return this.vacationRepo.getVacationDeals();
+    }
+
     private String formatPrice(String priceStr) {
         if (priceStr == null || priceStr.isEmpty()) {
             return "";
@@ -118,9 +126,9 @@ public class VacationServiceImpl implements VacationService {
         return priceStr.replaceAll("[$,]", "");
     }
 
-    private String getDiscount(String regularPriceStr, String salePriceStr) {
+    private Long getDiscount(String regularPriceStr, String salePriceStr) {
         if (regularPriceStr == null || regularPriceStr.isEmpty() || salePriceStr == null || salePriceStr.isEmpty()) {
-            return "";
+            return 0L;
         }
 
         double regularPrice = Double.parseDouble(regularPriceStr);
@@ -129,7 +137,7 @@ public class VacationServiceImpl implements VacationService {
         double discount = regularPrice - salePrice;
         double discountPercentage = (discount / regularPrice) * 100;
 
-        return String.format("%.0f", discountPercentage) + "%";
+        return (long) discountPercentage;
     }
 
 }

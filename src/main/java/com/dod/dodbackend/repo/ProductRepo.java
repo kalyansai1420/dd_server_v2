@@ -15,16 +15,36 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 
     public Product findBySku(String sku);
     
-	@Query(value = "SELECT DISTINCT * FROM doddb.product where name LIKE %:search% LIMIT 25 ", nativeQuery = true)
+	@Query(value = "SELECT DISTINCT * FROM dddatabase.product where name LIKE %:search% LIMIT 25 ", nativeQuery = true)
 	List<Product> searchByName(@Param("search") String search);
 	
 	
-	@Query(value="SELECT DISTINCT COUNT(*) > 0 FROM information_schema.STATISTICS WHERE table_schema = 'doddb' AND table_name = 'product' AND index_name = 'productsIndex'",nativeQuery = true)
+	@Query(value="SELECT DISTINCT COUNT(*) > 0 FROM information_schema.STATISTICS WHERE table_schema = 'dddatabase' AND table_name = 'product' AND index_name = 'productsIndex'",nativeQuery = true)
 	public Integer showFullTextindex();
 	
-	@Query(value="SELECT DISTINCT * FROM doddb.product where MATCH(name) AGAINST (:search) LIMIT 25;", nativeQuery = true)
+	@Query(value="SELECT DISTINCT * FROM dddatabase.product where MATCH(name) AGAINST (:search) LIMIT 25;", nativeQuery = true)
 	List<Product>indexSearch(@Param("search") String search);
-    
 
+	// Deals on laptops
+	@Query(value="Select * from dddatabase.product where sub_category = 'Laptops'", nativeQuery = true)
+	List<Product> getLaptops();
+
+	// Deals on Gaming and Monitor
+	@Query(value="Select * from dddatabase.product where sub_category in ('Gaming','Desktops','Desktop & All-in-One Computers')", nativeQuery = true)
+	List<Product> getGamingAndMonitor();
+
+	// Top deals with highest discount percentage
+	@Query(value="Select * from dddatabase.product where discount_percentage > 0 order by discount_percentage desc limit 50", nativeQuery = true)
+	List<Product> getTopDeals();
+
+	// Get furnitures
+	@Query(value="Select * from dddatabase.product where campaign = 'Ikea'", nativeQuery = true)
+	List<Product> getFurnitures();
+
+	// Get Electronics
+	@Query(value="Select * from dddatabase.product where category = 'Electronics'", nativeQuery = true)
+	List<Product> getElectronics();
+
+	// Get Vacation
     
 } 

@@ -26,7 +26,7 @@ public class Product {
     private String subCategory;
     private String regularPrice;
     private String salePrice;
-    private String discountPercentage;
+    private Long discountPercentage;
     private String image;
     private String rating;
 	@Column(columnDefinition="TEXT")
@@ -44,7 +44,7 @@ public class Product {
    
 
     public Product(String sku, String name, String description, String campaign, String category, String subCategory,
-            String regularPrice, String salePrice, String discountPercentage, String image, String rating, String url,
+            String regularPrice, String salePrice, Long discountPercentage, String image, String rating, String url,
             List<ProductImage> images) {
         this.sku = sku;
         this.name = name;
@@ -144,12 +144,12 @@ public class Product {
     }
 
 
-    public String getDiscountPercentage() {
+    public Long getDiscountPercentage() {
         return discountPercentage;
     }
 
 
-    public void setDiscountPercentage(String discountPercentage) {
+    public void setDiscountPercentage(Long discountPercentage) {
         this.discountPercentage = discountPercentage;
     }
 

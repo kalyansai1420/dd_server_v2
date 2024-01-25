@@ -566,9 +566,9 @@ public class BestBuyServiceImpl implements BestBuyService {
         }
     }
 
-    private String getDiscount(String regularPriceStr, String salePriceStr) {
+    private Long getDiscount(String regularPriceStr, String salePriceStr) {
         if (regularPriceStr == null || regularPriceStr.isEmpty() || salePriceStr == null || salePriceStr.isEmpty()) {
-            return "";
+            return 0L;
         }
 
         double regularPrice = Double.parseDouble(regularPriceStr);
@@ -577,7 +577,7 @@ public class BestBuyServiceImpl implements BestBuyService {
         double discount = regularPrice - salePrice;
         double discountPercentage = (discount / regularPrice) * 100;
 
-        return String.format("%.0f", discountPercentage) + "%";
+        return (long)discountPercentage;
     }
 
 }

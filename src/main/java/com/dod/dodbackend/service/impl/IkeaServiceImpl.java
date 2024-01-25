@@ -87,7 +87,6 @@ public class IkeaServiceImpl implements IkeaService {
 
                         }
                     }
-                    String discountPercentage = getDiscount(regularPriceStr, salePriceStr);
 
                     String url = (String) productMap.get("url");
 
@@ -96,8 +95,7 @@ public class IkeaServiceImpl implements IkeaService {
                     product.setCampaign(campaign);
                     product.setCategory(category);
                     product.setDescription(description);
-                    product.setDiscountPercentage(discountPercentage);
-                    product.setImage(image);
+                    product.setDiscountPercentage(getDiscount(regularPriceStr, salePriceStr));                    product.setImage(image);
                     product.setName(name);
                     product.setRating(rating);
                     product.setRegularPrice(regularPriceStr);
@@ -191,7 +189,6 @@ public class IkeaServiceImpl implements IkeaService {
 
                         }
                     }
-                    String discountPercentage = getDiscount(regularPriceStr, salePriceStr);
 
                     String url = (String) productMap.get("url");
 
@@ -200,8 +197,7 @@ public class IkeaServiceImpl implements IkeaService {
                     product.setCampaign(campaign);
                     product.setCategory(category);
                     product.setDescription(description);
-                    product.setDiscountPercentage(discountPercentage);
-                    product.setImage(image);
+                    product.setDiscountPercentage(getDiscount(regularPriceStr, salePriceStr));                    product.setImage(image);
                     product.setName(name);
                     product.setRating(rating);
                     product.setRegularPrice(regularPriceStr);
@@ -294,7 +290,6 @@ public class IkeaServiceImpl implements IkeaService {
 
                         }
                     }
-                    String discountPercentage = getDiscount(regularPriceStr, salePriceStr);
 
                     String url = (String) productMap.get("url");
 
@@ -303,7 +298,7 @@ public class IkeaServiceImpl implements IkeaService {
                     product.setCampaign(campaign);
                     product.setCategory(category);
                     product.setDescription(description);
-                    product.setDiscountPercentage(discountPercentage);
+                    product.setDiscountPercentage(getDiscount(regularPriceStr, salePriceStr));
                     product.setImage(image);
                     product.setName(name);
                     product.setRating(rating);
@@ -397,7 +392,7 @@ public class IkeaServiceImpl implements IkeaService {
 
                         }
                     }
-                    String discountPercentage = getDiscount(regularPriceStr, salePriceStr);
+                    
 
                     String url = (String) productMap.get("url");
 
@@ -406,7 +401,8 @@ public class IkeaServiceImpl implements IkeaService {
                     product.setCampaign(campaign);
                     product.setCategory(category);
                     product.setDescription(description);
-                    product.setDiscountPercentage(discountPercentage);
+
+                    product.setDiscountPercentage(getDiscount(regularPriceStr, salePriceStr));
                     product.setImage(image);
                     product.setName(name);
                     product.setRating(rating);
@@ -438,9 +434,9 @@ public class IkeaServiceImpl implements IkeaService {
         }
     }
 
-    public String getDiscount(String regularPriceStr, String salePriceStr) {
+    private Long getDiscount(String regularPriceStr, String salePriceStr) {
         if (regularPriceStr == null || regularPriceStr.isEmpty() || salePriceStr == null || salePriceStr.isEmpty()) {
-            return "";
+            return 0L;
         }
 
         double regularPrice = Double.parseDouble(regularPriceStr);
@@ -449,7 +445,7 @@ public class IkeaServiceImpl implements IkeaService {
         double discount = regularPrice - salePrice;
         double discountPercentage = (discount / regularPrice) * 100;
 
-        return String.format("%.0f", discountPercentage) + "%";
+        return (long)discountPercentage;
     }
 
 }

@@ -80,9 +80,7 @@ public class DellServiceImpl implements DellService {
 
                 product.setCategory("Electronics");
 
-                float discountPercentage = ((regularPrice - salePrice) / regularPrice) * 100;
-                String formattedDiscountPercentage = String.format("%.2f", discountPercentage);
-                product.setDiscountPercentage(formattedDiscountPercentage);
+                product.setDiscountPercentage(getDiscount(formattedRegularPrice, formattedSalePrice));
 
                 List<ProductImage> productImages = new ArrayList<>();
                 String productImageURL = productElement.select("div.ps-image img").attr("data-src");
@@ -116,10 +114,8 @@ public class DellServiceImpl implements DellService {
                     .header("Referer", "https://www.google.com/")
                     .header("Accept-Language", "en-US,en;q=0.9")
                     .get();
-
-            // Introduce a delay between requests
             try {
-                Thread.sleep(2000); // 2 seconds delay
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -163,10 +159,7 @@ public class DellServiceImpl implements DellService {
                 product.setRating(rating);
 
                 product.setCategory("Electronics");
-
-                float discountPercentage = ((regularPrice - salePrice) / regularPrice) * 100;
-                String formattedDiscountPercentage = String.format("%.2f", discountPercentage);
-                product.setDiscountPercentage(formattedDiscountPercentage);
+                product.setDiscountPercentage(getDiscount(formattedRegularPrice, formattedSalePrice));
 
                 List<ProductImage> productImages = new ArrayList<>();
                 String productImageURL = productElement.select("div.ps-image img").attr("data-src");
@@ -182,7 +175,6 @@ public class DellServiceImpl implements DellService {
                 productsToSave.add(product);
             }
 
-            
             this.productRepo.saveAll(productsToSave);
         } catch (IOException e) {
             e.printStackTrace();
@@ -201,9 +193,8 @@ public class DellServiceImpl implements DellService {
                     .header("Accept-Language", "en-US,en;q=0.9")
                     .get();
 
-            // Introduce a delay between requests
             try {
-                Thread.sleep(2000); // 2 seconds delay
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -226,12 +217,13 @@ public class DellServiceImpl implements DellService {
                 product.setCampaign("Dell");
 
                 String regularPriceText = productElement.select("div.ps-orig span.strike-through").text();
-                float regularPrice = Float.parseFloat(regularPriceText.replaceAll("[^0-9.]", ""));
+                float regularPrice = regularPriceText.isEmpty() ? 0
+                        : Float.parseFloat(regularPriceText.replaceAll("[^0-9.]", ""));
                 String formattedRegularPrice = String.format("%.2f", regularPrice);
                 product.setRegularPrice(formattedRegularPrice);
 
                 String salePriceText = productElement.select("div.ps-dell-price span").text();
-                float salePrice = Float.parseFloat(salePriceText.replaceAll("[^0-9.]", ""));
+                float salePrice = salePriceText.isEmpty() ? 0 : Float.parseFloat(salePriceText.replaceAll("[^0-9.]", ""));
                 String formattedSalePrice = String.format("%.2f", salePrice);
                 product.setSalePrice(formattedSalePrice);
 
@@ -247,10 +239,7 @@ public class DellServiceImpl implements DellService {
                 product.setRating(rating);
 
                 product.setCategory("Electronics");
-
-                float discountPercentage = ((regularPrice - salePrice) / regularPrice) * 100;
-                String formattedDiscountPercentage = String.format("%.2f", discountPercentage);
-                product.setDiscountPercentage(formattedDiscountPercentage);
+                product.setDiscountPercentage(getDiscount(formattedRegularPrice, formattedSalePrice));
 
                 List<ProductImage> productImages = new ArrayList<>();
                 String productImageURL = productElement.select("div.ps-image img").attr("data-src");
@@ -271,6 +260,20 @@ public class DellServiceImpl implements DellService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Long getDiscount(String regularPriceStr, String salePriceStr) {
+        if (regularPriceStr == null || regularPriceStr.isEmpty() || salePriceStr == null || salePriceStr.isEmpty()) {
+            return 0L;
+        }
+
+        double regularPrice = Double.parseDouble(regularPriceStr);
+        double salePrice = Double.parseDouble(salePriceStr);
+
+        double discount = regularPrice - salePrice;
+        double discountPercentage = (discount / regularPrice) * 100;
+
+        return (long) discountPercentage;
     }
 
 }
